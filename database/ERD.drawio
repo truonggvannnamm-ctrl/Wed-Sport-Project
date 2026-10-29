@@ -1,0 +1,164 @@
+# ERD for Sport Shop Database
+
+```mermaid
+  erDiagram
+    USERS ||--o{ REVIEWS : "has"
+    USERS ||--o{ SHOPPINGCARTS : "has"
+    USERS ||--o{ ORDERS : "places"
+    USERS ||--o{ IMPORTRECEIPTS : "creates"
+    
+    CATEGORIES ||--o{ PRODUCTS : "categorizes"
+    BRANDS ||--o{ PRODUCTS : "brands"
+
+    PRODUCTS ||--o{ PRODUCTVARIANTS : "has"
+    PRODUCTS ||--o{ REVIEWS : "receives"
+
+    PRODUCTVARIANTS ||--o{ PRODUCTIMAGES : "has"
+    PRODUCTVARIANTS ||--o{ IMPORTRECEIPTDETAILS : "is_part_of"
+    PRODUCTVARIANTS ||--o{ SHOPPINGCARTITEMS : "contains"
+    PRODUCTVARIANTS ||--o{ ORDERDETAILS : "is_part_of"
+
+    SUPPLIERS ||--o{ IMPORTRECEIPTS : "supplies"
+
+    IMPORTRECEIPTS ||--o{ IMPORTRECEIPTDETAILS : "details"
+
+    SHOPPINGCARTS ||--o{ SHOPPINGCARTITEMS : "contains"
+
+    ORDERS ||--o{ ORDERDETAILS : "details"
+
+    USERS {
+        INT id PK
+        VARCHAR username UK
+        VARCHAR password
+        VARCHAR email UK
+        VARCHAR full_name
+        VARCHAR phone_number
+        VARCHAR address
+        ENUM role "Admin, Employee, Customer"
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    CATEGORIES {
+        INT id PK
+        VARCHAR name UK
+        TEXT description
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    BRANDS {
+        INT id PK
+        VARCHAR name UK
+        TEXT description
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    PRODUCTS {
+        INT id PK
+        VARCHAR name
+        TEXT description
+        INT category_id FK
+        INT brand_id FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    PRODUCTVARIANTS {
+        INT id PK
+        INT product_id FK
+        VARCHAR size
+        VARCHAR color
+        VARCHAR sku UK
+        DECIMAL price
+        INT stock
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    PRODUCTIMAGES {
+        INT id PK
+        INT product_variant_id FK
+        VARCHAR image_url
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    SUPPLIERS {
+        INT id PK
+        VARCHAR name
+        VARCHAR contact_person
+        VARCHAR phone_number
+        VARCHAR address
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    IMPORTRECEIPTS {
+        INT id PK
+        INT supplier_id FK
+        INT employee_id FK
+        DATE import_date
+        DECIMAL total_amount
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    IMPORTRECEIPTDETAILS {
+        INT id PK
+        INT import_receipt_id FK
+        INT product_variant_id FK
+        INT quantity
+        DECIMAL import_price
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    SHOPPINGCARTS {
+        INT id PK
+        INT customer_id FK UK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    SHOPPINGCARTITEMS {
+        INT id PK
+        INT cart_id FK
+        INT product_variant_id FK
+        INT quantity
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    ORDERS {
+        INT id PK
+        INT customer_id FK
+        DATE order_date
+        DECIMAL total_amount
+        ENUM status "Pending, Confirmed, Shipped, Delivered, Cancelled"
+        VARCHAR shipping_address
+        VARCHAR phone_number
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    ORDERDETAILS {
+        INT id PK
+        INT order_id FK
+        INT product_variant_id FK
+        INT quantity
+        DECIMAL price_at_order
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    REVIEWS {
+        INT id PK
+        INT customer_id FK
+        INT product_id FK
+        INT rating
+        TEXT comment
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
